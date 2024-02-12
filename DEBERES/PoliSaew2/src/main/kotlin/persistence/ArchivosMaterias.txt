@@ -1,1 +1,2 @@
 calculo,1234,4.0,CharroCesar,2023-A
+Quimica,4321,5.0,DominguezErick,2021-B

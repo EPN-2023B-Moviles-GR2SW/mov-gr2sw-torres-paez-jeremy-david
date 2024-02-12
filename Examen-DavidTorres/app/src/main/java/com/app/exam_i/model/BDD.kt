@@ -39,7 +39,7 @@ object BDD {
         mutableListOf(materia1, materia2)
     )
     private val semestre2 = Semestre(
-        "Jose Moncayo",
+        "Yoslava Garofalo",
         2020,
         LocalDate.of(2020, 5, 28),
         true,
