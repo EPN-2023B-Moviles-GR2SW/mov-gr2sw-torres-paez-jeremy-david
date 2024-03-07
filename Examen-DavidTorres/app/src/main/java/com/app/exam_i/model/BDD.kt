@@ -1,7 +1,5 @@
 package com.app.exam_i.model
 
-import java.time.LocalDate
-
 object BDD {
     private val materia1 = Materia(
         "Sistemas Embebidos",
@@ -34,14 +32,14 @@ object BDD {
     private val semestre1 = Semestre(
         "David Torres",
         2023,
-        LocalDate.of(2023, 11, 28),
+        "2023-11-28)",
         true,
         mutableListOf(materia1, materia2)
     )
     private val semestre2 = Semestre(
-        "Yoslava Garofalo",
+        "David Torres 2",
         2020,
-        LocalDate.of(2020, 5, 28),
+        "2023-10-28)",
         true,
         mutableListOf(materia3, materia4)
     )

@@ -1,25 +1,23 @@
 package com.app.exam_i
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.content.Intent
-import com.app.exam_i.model.BDD
+import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.app.exam_i.model.BDD
 import com.app.exam_i.model.Materia
 import com.app.exam_i.model.Semestre
 import java.text.ParseException
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 
 class pantallaEditarSemestre : AppCompatActivity() {
 
     lateinit var nombre: String
     var año: Int = 0
-    var fechaInicio: LocalDate = LocalDate.now()
+    lateinit var fechaInicio: String
     var activo: Boolean = false
     var numeroTotalMateria: MutableList<Materia> = mutableListOf()
 
@@ -59,7 +57,7 @@ class pantallaEditarSemestre : AppCompatActivity() {
 
                 try {
                     // Parseo seguro de la fecha
-                    var fechaInicio = parseFecha(inputFechaInicio.text.toString())
+                    fechaInicio = inputFechaInicio.text.toString()
                     nombre = inputNombreSemestre.text.toString()
                     año = inputAño.text.toString().toInt()
                     activo = inputActivo.isChecked
@@ -85,7 +83,7 @@ class pantallaEditarSemestre : AppCompatActivity() {
             btnCrear.setOnClickListener {
                 try {
                     // Parseo seguro de la fecha
-                    var fechaInicio = parseFecha(inputFechaInicio.text.toString())
+                    fechaInicio = inputFechaInicio.text.toString()
                     nombre = inputNombreSemestre.text.toString()
                     año = inputAño.text.toString().toInt()
                     activo = inputActivo.isChecked
@@ -102,10 +100,5 @@ class pantallaEditarSemestre : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun parseFecha(fecha: String): LocalDate {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        return LocalDate.parse(fecha, formatter)
     }
 }

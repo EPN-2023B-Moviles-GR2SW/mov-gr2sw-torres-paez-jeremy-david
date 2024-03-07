@@ -1,21 +1,24 @@
 package com.app.exam_i
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.widget.ArrayAdapter
-import androidx.activity.result.contract.ActivityResultContracts
-import com.app.exam_i.model.Semestre
-import com.app.exam_i.model.BDD
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.provider.ContactsContract
 import android.view.ContextMenu
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
-
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import com.app.exam_i.model.BDD
+import com.app.exam_i.model.Semestre
+import com.google.android.material.snackbar.Snackbar
 
 class PantallaPrincipal : AppCompatActivity() {
     val data = BDD.datos
@@ -50,6 +53,13 @@ class PantallaPrincipal : AppCompatActivity() {
             intent.putExtra("positionDirectorSelected", -1)
             callbackContenido.launch(intent)
         }
+
+        val botonFirestore = findViewById<Button>(R.id.btn_intent_firestore)
+        botonFirestore
+            .setOnClickListener {
+                irActividad(IFirestore::class.java)
+            }
+
         registerForContextMenu(listView)
     }
     override fun onCreateContextMenu(
@@ -62,6 +72,12 @@ class PantallaPrincipal : AppCompatActivity() {
         inflater.inflate(R.menu.menusemestre, menu)
         val info = menuInfo as AdapterView.AdapterContextMenuInfo
         positionSemestreSelected = info.position
+
+        val botonFirestore = findViewById<Button>(R.id.btn_intent_firestore)
+        botonFirestore
+            .setOnClickListener {
+                irActividad(IFirestore::class.java)
+            }
     }
     override fun onContextItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
@@ -103,6 +119,79 @@ class PantallaPrincipal : AppCompatActivity() {
             }
 
             else -> super.onContextItemSelected(item)
+
+
         }
+
     }
+    fun irActividad(
+        clase: Class<*>
+    ){
+        val intent = Intent(this, clase)
+        startActivity(intent)
+    }
+
+
+    fun abrirActividadConParametros(
+        clase: Class<*>
+    ){
+        val intentExplicito = Intent(this, clase)
+        // Enviar parametros (solamente variables primitivas)
+        intentExplicito.putExtra("nombre", "2024-A")
+        intentExplicito.putExtra("anio", "2022")
+        intentExplicito.putExtra("activo", true)
+        intentExplicito.putExtra("fechaInicio", "03-03-2022")
+
+        intentExplicito.putExtra("Semestre",
+            Semestre("2024-A", 2022, "03-03-2022", true, mutableListOf())
+        )
+
+        val callbackContenidoIntentExplicito =
+            registerForActivityResult(
+                ActivityResultContracts.StartActivityForResult()
+            ){
+                    result ->
+                if(result.resultCode == Activity.RESULT_OK){
+                    if(result.data != null){
+                        // Logica Negocio
+                        val data = result.data
+                        mostrarSnackbar(
+                            "${data?.getStringExtra("nombreModificado")}"
+                        )
+                    }
+                }
+            }
+    }
+
+    fun mostrarSnackbar(texto:String){
+        Snackbar.make(
+            findViewById(R.id.pantallaPrincipal
+            ),
+            texto,
+            Snackbar.LENGTH_LONG
+        ).show()
+    }
+
+    val callbackIntentPickUri =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ){
+                result ->
+            if(result.resultCode === RESULT_OK){
+                if(result.data != null){
+                    if(result.data!!.data != null){
+                        val uri: Uri = result.data!!.data!!
+                        val cursor = contentResolver.query(
+                            uri, null, null, null,  null, null)
+                        cursor?.moveToFirst()
+                        val indiceTelefono = cursor?.getColumnIndex(
+                            ContactsContract.CommonDataKinds.Phone.NUMBER
+                        )
+                        val telefono = cursor?.getString(indiceTelefono!!)
+                        cursor?.close()
+                        mostrarSnackbar("Telefono ${telefono}")
+                    }
+                }
+            }
+        }
 }
